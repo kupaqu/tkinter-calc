@@ -9,9 +9,17 @@ def click(entry, lbl):
         expression = entry.get()
         entry.delete(0, "end")
         try:
-            entry.insert(0, ne.evaluate(expression))
+            evaluated = ne.evaluate(expression)
+
+            # https://docs.python.org/3/tutorial/floatingpoint.html
+            if evaluated.dtype == 'float':
+                evaluated = round(float(evaluated), 10)
+                
+            entry.insert(0, evaluated)
         except SyntaxError:
-            entry.insert(0, "Syntax error! Clear to continue")
+            entry.insert(0, "Syntax error! Clear to continue!")
+        except ZeroDivisionError:
+            entry.insert(0, "Zero division error! Clear to continue!")
     else:
         entry.insert("end", lbl)
 
